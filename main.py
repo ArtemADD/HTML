@@ -11,7 +11,12 @@ def index():
 
 @app.route('/training/<prof>')
 def training(prof):
-    return render_template('index.html', title=prof, prof=prof)
+    return render_template('2.html', prof=prof)
+
+
+@app.route('/list_prof/<list>')
+def list_prof(list):
+    return render_template('3.html', list=list)
 
 
 if __name__ == '__main__':
