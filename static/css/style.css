@@ -1,4 +1,32 @@
-h4 {
+#base {
     margin-left: 20px;
     color: grey;
+}
+#tb
+h1  {
+    text-align: center;
+}
+th {
+    text-transform: capitalize;
+    padding: 15px 15px;
+    background: #dddddd;
+    font-size: 18px;
+}
+td {
+    text-transform: capitalize;
+    padding: 15px 15px;
+    background: #eeeeff;
+    text-align: center;
+    font-size: 18px;
+}
+table {
+   border-collapse: collapse;
+   border-spacing: 10px, 10px;
+}
+caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 30px;
+    color: black;
+    font-weight: bold;
 }

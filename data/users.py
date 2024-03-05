@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from .db_session import SqlAlchemyBase
 
-
 class User(SqlAlchemyBase):
     __tablename__ = 'users'
 
@@ -21,6 +20,10 @@ class User(SqlAlchemyBase):
                               unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime)
+
+    def __repr__(self):
+        return '<Colonist> {0} {1} {2}'.format(self.id, self.surname, self.name)
+
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
