@@ -1,6 +1,20 @@
-#base {
+#header {
+    position: relative;
+    height: 120px;
+}
+#labels h4 {
     margin-left: 20px;
     color: grey;
+}
+#labels {
+    position: absolute;
+    width: 600px;
+}
+#user-info {
+    position: absolute;
+    width: 300px;
+    left: 1500px;
+    text-align: right;
 }
 #tb
 h1  {
