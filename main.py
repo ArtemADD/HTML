@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, abort
+from flask import Flask, render_template, request, redirect, abort, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from data.jobs import Jobs
@@ -99,8 +99,7 @@ def add_news():
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
         jobs.is_finished = form.is_finished.data
-        current_user.jobs.append(jobs)
-        db_sess.merge(current_user)
+        db_sess.add(jobs)
         db_sess.commit()
         return redirect('/')
     return render_template('jobs.html', title='Adding a job',
@@ -159,6 +158,16 @@ def main():
     db_sess = db_session.create_session()
     app.register_blueprint(jobs_api.blueprint)
     app.run()
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 
 if __name__ == '__main__':
