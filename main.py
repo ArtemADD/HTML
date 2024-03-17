@@ -1,11 +1,11 @@
-from flask import Flask, render_template, make_response, request, redirect, abort
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, request, redirect, abort
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from data.jobs import Jobs
 from forms.user import RegisterForm, LoginForm
 from forms.jobs import JobsForm
 
-from data import db_session
+from data import db_session, jobs_api
 
 
 app = Flask(__name__)
@@ -94,13 +94,13 @@ def add_news():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         jobs = Jobs()
-        jobs.team_leader = current_user.id
         jobs.job = form.job.data
+        jobs.team_leader = form.team_leader.data
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
-        jobs.start_date = form.start_date.data
-        jobs.end_date = form.end_date.data
         jobs.is_finished = form.is_finished.data
+        current_user.jobs.append(jobs)
+        db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
     return render_template('jobs.html', title='Adding a job',
@@ -113,29 +113,23 @@ def edit_news(id):
     form = JobsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          Jobs.team_leader == current_user.id
-                                          ).first()
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
         if jobs:
             form.job.data = jobs.job
+            form.team_leader.data = jobs.team_leader
             form.work_size.data = jobs.work_size
             form.collaborators.data = jobs.collaborators
-            form.start_date.data = jobs.start_date
-            form.end_date.data = jobs.end_date
             form.is_finished.data = jobs.is_finished
         else:
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                          Jobs.team_leader == current_user.id
-                                          ).first()
+        jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
         if jobs:
             jobs.job = form.job.data
+            jobs.team_leader = form.team_leader.data
             jobs.work_size = form.work_size.data
             jobs.collaborators = form.collaborators.data
-            jobs.start_date = form.start_date.data
-            jobs.end_date = form.end_date.data
             jobs.is_finished = form.is_finished.data
             db_sess.commit()
             return redirect('/')
@@ -151,9 +145,7 @@ def edit_news(id):
 @login_required
 def news_delete(id):
     db_sess = db_session.create_session()
-    jobs = db_sess.query(Jobs).filter(Jobs.id == id,
-                                      Jobs.team_leader == current_user.id
-                                      ).first()
+    jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
     if jobs:
         db_sess.delete(jobs)
         db_sess.commit()
@@ -165,6 +157,7 @@ def news_delete(id):
 def main():
     db_session.global_init('db/mars_explorer.db')
     db_sess = db_session.create_session()
+    app.register_blueprint(jobs_api.blueprint)
     app.run()
 
 

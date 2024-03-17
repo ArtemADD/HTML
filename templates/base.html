@@ -12,18 +12,14 @@
     </head>
     <body>
     <header>
-        <div class="alert alert-dark" role="alert" id="header">
-            <div id="labels">
+        <div  class="header">
+            <div class="header-title">
                 <h1>Миссия Колонизация Марса</h1>
-                <h4>И на Марсе будут яблони цвести!</h4>
             </div>
-            <div id="user-info">
+            <div class="header-profile">
                 {% if current_user.is_authenticated %}
                 <p>
                     <a class="navbar-brand" href="/logout">{{ current_user.surname }} {{ current_user.name }}</a>
-                </p>
-                <p>
-                    <a href="/jobs" class="btn btn-secondary">Add job</a>
                 </p>
                 {% else %}
                     <p>
@@ -32,8 +28,12 @@
                     </p>
                 {% endif %}
             </div>
+            <div class="header-about">
+                <h4>Mars One</h4>
+            </div>
         </div>
     </header>
+    <h4 id="zxc">И на Марсе будут яблони цвести!</h4>
     <!-- Begin page content -->
     <main role="main" class="container">
         {% block content %}{% endblock %}
