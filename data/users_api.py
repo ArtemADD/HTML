@@ -37,7 +37,7 @@ def get_one_user(user_id):
             'user':
                 user.to_dict(only=(
                               'id', 'surname', 'name', 'age', 'position', 'speciality', 'address', 'email',
-                              'hashed_password'))
+                              'hashed_password', 'city_from'))
 
         }
     )

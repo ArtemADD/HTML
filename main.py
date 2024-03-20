@@ -6,6 +6,8 @@ from forms.user import RegisterForm, LoginForm
 from forms.jobs import JobsForm
 from data import db_session, jobs_api, users_api
 import os
+from io import BytesIO
+from requests import get
 
 
 app = Flask(__name__)
@@ -151,6 +153,21 @@ def news_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/users_show/<int:user_id>')
+def user_show(user_id):
+    db_sess = db_session.create_session()
+    user = get(f'http://localhost:5000/api/users/{user_id}').json()['user']
+    c = user['city_from']
+    response = get(f'http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode="{c}"&format=json').json()
+    if not response:
+        return response
+    pos = ','.join(response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"].split())
+    response = get(f'http://static-maps.yandex.ru/1.x/?ll={pos}&spn=0.09,0.09&l=sat')
+    with open('static/img/map.png', 'wb+') as f:
+        f.write(response.content)
+    return render_template('shows.html', user=user)
 
 
 def main():

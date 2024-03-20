@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="static/css/style.css" />
+    <div>
+        <h2>Nostalgy</h2>
+        <h2>{{user["surname"]}} {{user["name"]}}</h2>
+        <h3>Hometown {{user["city_from"]}}</h3>
+        <img src="../static/img/map.png"/>
+    </div>
+{% endblock %}
