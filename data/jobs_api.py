@@ -13,21 +13,21 @@ blueprint = flask.Blueprint(
 
 
 @blueprint.route('/api/jobs')
-def get_news():
+def get_jobs():
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).all()
     return jsonify(
         {
             'jobs':
                 [item.to_dict(only=(
-                    'job', 'team_leader', 'work_size', 'collaborators', 'start_date', 'end_date', 'is_finished'))
+                    'id', 'job', 'team_leader', 'work_size', 'collaborators', 'start_date', 'end_date', 'is_finished'))
                  for item in jobs]
         }
     )
 
 
 @blueprint.route('/api/jobs/<int:jobs_id>', methods=['GET'])
-def get_one_news(jobs_id):
+def get_one_jobs(jobs_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(jobs_id)
     if not jobs:
@@ -35,13 +35,13 @@ def get_one_news(jobs_id):
     return jsonify(
         {
             'jobs': jobs.to_dict(only=(
-                    'job', 'team_leader', 'work_size', 'collaborators', 'start_date', 'end_date', 'is_finished'))
+                'id', 'job', 'team_leader', 'work_size', 'collaborators', 'start_date', 'end_date', 'is_finished'))
         }
     )
 
 
 @blueprint.route('/api/jobs', methods=['POST'])
-def create_news():
+def create_jobs():
     if not request.json:
         return make_response(jsonify({'error': 'Empty request'}), 400)
     elif not all(key in request.json for key in
@@ -63,7 +63,7 @@ def create_news():
 
 
 @blueprint.route('/api/jobs/<int:jobs_id>', methods=['DELETE'])
-def delete_news(jobs_id):
+def delete_jobs(jobs_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(jobs_id)
     if not jobs:
@@ -74,7 +74,7 @@ def delete_news(jobs_id):
 
 
 @blueprint.route('/api/jobs/<int:jobs_id>', methods=['POST'])
-def edit_news(jobs_id):
+def edit_jobs(jobs_id):
     if not request.json:
         return make_response(jsonify({'error': 'Empty request'}), 400)
     elif not all(key in ['job', 'team_leader', 'work_size', 'collaborators', 'start_date', 'end_date', 'is_finished'] for key in request.json):

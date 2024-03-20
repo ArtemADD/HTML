@@ -1,21 +1,27 @@
 from requests import get, post, delete
 import datetime
 
-# print(get('http://localhost:5000/api/jobs').json())
-# print(get('http://localhost:5000/api/jobs/4').json())
-# print(get('http://localhost:5000/api/jobs/q').json())
-# print(post('http://localhost:5000/api/jobs', json={}).json())
+# print(get('http://localhost:5000/api/users').json())
+# print(get('http://localhost:5000/api/users/1').json())
+# print(get('http://localhost:5000/api/users/q').json())
+# print(post('http://localhost:5000/api/users', json={}).json())
 #
-# print(post('http://localhost:5000/api/jobs',
+# print(post('http://localhost:5000/api/users',
 #            json={'job': 'zxccvxvc'}).json())
-
-print(post('http://localhost:5000/api/jobs/3',
-           json={'team_leader': 2,
-                 'work_size': 10,
-                 'is_finished': True}).json())
-print(get('http://localhost:5000/api/jobs/3').json())
-
-# print(delete('http://localhost:5000/api/jobs/999').json())
-# # новости с id = 999 нет в базе
+# print(post('http://localhost:5000/api/users',
+#            json={'surname': 'lox',
+#                  'name': 'zxc',
+#                  'age': 21,
+#                  'position': 'cap',
+#                  'speciality': 'engineer',
+#                  'address': 'module_2',
+#                  'email': 'engineer@mars.org',
+#                  'hashed_password': ''
+#                  }).json())
 #
-# print(delete('http://localhost:5000/api/jobs/4').json())
+# print(get('http://localhost:5000/api/users/1').json())
+
+print(post('http://localhost:5000/api/users/2',
+           json={'surname': 'norm'}).json())
+
+print(get('http://localhost:5000/api/users/2').json())
