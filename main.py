@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, abort, make_respons
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data.users import User
 from data.jobs import Jobs
+from data.departments import Department
 from forms.user import RegisterForm, LoginForm
 from forms.jobs import JobsForm
 from data import db_session, jobs_api, users_api
@@ -157,7 +158,6 @@ def news_delete(id):
 
 @app.route('/users_show/<int:user_id>')
 def user_show(user_id):
-    db_sess = db_session.create_session()
     user = get(f'http://localhost:5000/api/users/{user_id}').json()['user']
     c = user['city_from']
     response = get(f'http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode="{c}"&format=json').json()
@@ -172,10 +172,32 @@ def user_show(user_id):
 
 def main():
     db_session.global_init('db/mars_explorer.db')
+    # one_more_query()
     app.register_blueprint(jobs_api.blueprint)
     app.register_blueprint(users_api.blueprint)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
+
+def one_more_query():
+    db_sess = db_session.create_session()
+    department = db_sess.query(Department).get(1)
+    users = list(map(lambda x: int(x), department.members.split(', ')))
+    users.append(department.chief)
+    res = {}
+    for user in users:
+        u = db_sess.query(User).get(user)
+        u = f'{u.surname} {u.name}'
+        res[u] = [0, user]
+    jobs = db_sess.query(Jobs).all()
+    for j in jobs:
+        if j.is_finished:
+            for u in res.keys():
+                if str(res[u][-1]) in j.collaborators or res[u][-1] == j.team_leader:
+                    res[u][0] += int(j.work_size)
+    for u in res.keys():
+        if res[u][0] > 25:
+            print(u)
 
 
 @app.errorhandler(404)

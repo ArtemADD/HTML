@@ -25,6 +25,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     city_from = sqlalchemy.Column(sqlalchemy.String)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime)
     jobs = orm.relationship("Jobs", back_populates='user')
+    departments = orm.relationship('Department', back_populates='user')
 
     def __repr__(self):
         return '<Colonist> {0} {1} {2} {3} years'.format(self.id, self.surname, self.name, self.age)
