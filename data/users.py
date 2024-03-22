@@ -31,7 +31,9 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
         return '<Colonist> {0} {1} {2} {3} years'.format(self.id, self.surname, self.name, self.age)
 
     def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
+        # self.hashed_password = generate_password_hash(password)
+        self.hashed_password = password
 
     def check_password(self, password):
-        return check_password_hash(self.hashed_password, password)
+        # return check_password_hash(self.hashed_password, password)
+        return self.hashed_password == password

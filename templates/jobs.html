@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href="static/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../static/css/style.css" />
 <h1>{{ label }}</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
@@ -36,6 +36,15 @@
         {{ form.collaborators.label }}<br>
         {{ form.collaborators(class="form-control") }}<br>
         {% for error in form.collaborators.errors %}
+            <p content="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.category.label }}<br>
+        {{ form.category(class="form-control") }}<br>
+        {% for error in form.category.errors %}
             <p content="alert alert-danger" role="alert">
                 {{ error }}
             </p>

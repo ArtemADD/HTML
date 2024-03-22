@@ -20,23 +20,23 @@
     margin-left: 20px;
     color: grey;
 }
-#tb div {
+.tb div {
     position: relative;
     top: -10px;
     margin: 10px;
     left: -15px;
 }
-#tb h1  {
+.tb h1  {
     text-align: center;
 }
-#tb th {
+.tb th {
     text-transform: capitalize;
     padding: 15px 15px;
     text-align: center;
     background: #dddddd;
     font-size: 18px;
 }
-#tb td {
+.tb td {
     text-transform: capitalize;
     padding: 15px 15px;
     text-align: center;
@@ -45,13 +45,13 @@
 .td-def {
     background: #eeeeff;
 }
-#tb table {
+.tb table {
    border-collapse: collapse;
    border-spacing: 10px, 10px;
    width: 1100px;
    left: 100px
 }
-#tb caption {
+.tb caption {
     caption-side: top;
     text-align: left;
     font-size: 30px;

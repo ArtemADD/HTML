@@ -3,10 +3,13 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from data.users import User
 from data.jobs import Jobs
 from data.departments import Department
+from data.category import Category
 from forms.user import RegisterForm, LoginForm
 from forms.jobs import JobsForm
+from forms.departments import DepartmentsForm
 from data import db_session, jobs_api, users_api
 import os
+from random import randint
 from io import BytesIO
 from requests import get
 
@@ -92,7 +95,7 @@ def index():
 
 @app.route('/jobs',  methods=['GET', 'POST'])
 @login_required
-def add_news():
+def add_jobs():
     form = JobsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -101,6 +104,7 @@ def add_news():
         jobs.team_leader = form.team_leader.data
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
+        jobs.categories.append(db_sess.query(Category).filter(Category.id == form.category.data).first())
         jobs.is_finished = form.is_finished.data
         db_sess.add(jobs)
         db_sess.commit()
@@ -111,7 +115,7 @@ def add_news():
 
 @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_news(id):
+def edit_jobs(id):
     form = JobsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -121,6 +125,7 @@ def edit_news(id):
             form.team_leader.data = jobs.team_leader
             form.work_size.data = jobs.work_size
             form.collaborators.data = jobs.collaborators
+            form.category.data = jobs.categories[0].name
             form.is_finished.data = jobs.is_finished
         else:
             abort(404)
@@ -132,6 +137,7 @@ def edit_news(id):
             jobs.team_leader = form.team_leader.data
             jobs.work_size = form.work_size.data
             jobs.collaborators = form.collaborators.data
+            jobs.categories.append(db_sess.query(Category).filter(Category.id == form.category.data).first())
             jobs.is_finished = form.is_finished.data
             db_sess.commit()
             return redirect('/')
@@ -145,7 +151,7 @@ def edit_news(id):
 
 @app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def jobs_delete(id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
     if jobs:
@@ -170,34 +176,89 @@ def user_show(user_id):
     return render_template('shows.html', user=user)
 
 
+@app.route('/departments')
+def departments_index():
+    db_sess = db_session.create_session()
+    if current_user.is_authenticated:
+        departments = db_sess.query(Department).all()
+        chiefs = list(map(lambda x: x.chief, departments))
+        users = db_sess.query(User.id, User.surname, User.name).where(User.id.in_(chiefs)).all()
+        tms = {v[0]: f'{v[1]} {v[2]}' for v in users}
+    else:
+        departments = []
+        tms = []
+    return render_template("departments_index.html", departments=departments, tm=tms)
+
+
+@app.route('/new_department', methods=['GET', 'POST'])
+@login_required
+def new_department():
+    form = DepartmentsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        department = Department()
+        department.title = form.title.data
+        department.chief = form.chief.data
+        department.members = form.members.data
+        department.email = form.email.data
+        db_sess.add(department)
+        db_sess.commit()
+        return redirect('/departments')
+    return render_template('new_departments.html', title='Adding a department',
+                           form=form, label='Adding a department')
+
+
+@app.route('/department/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_department(id):
+    form = DepartmentsForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        department = db_sess.query(Department).filter(Department.id == id).first()
+        if department:
+            form.title.data = department.title
+            form.chief.data = department.chief
+            form.members.data = department.members
+            form.email.data = department.email
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        department = db_sess.query(Department).filter(Department.id == id).first()
+        if department:
+            department.title = form.title.data
+            department.chief = form.chief.data
+            department.members = form.members.data
+            department.email = form.email.data
+            db_sess.commit()
+            return redirect('/departments')
+        else:
+            abort(404)
+    return render_template('new_departments.html',
+                           title='Editing a department',
+                           form=form, label='Editing a department'
+                           )
+
+
+@app.route('/department_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def department_delete(id):
+    db_sess = db_session.create_session()
+    department = db_sess.query(Department).filter(Department.id == id).first()
+    if department:
+        db_sess.delete(department)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/departments')
+
+
 def main():
     db_session.global_init('db/mars_explorer.db')
-    # one_more_query()
     app.register_blueprint(jobs_api.blueprint)
     app.register_blueprint(users_api.blueprint)
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
-
-def one_more_query():
-    db_sess = db_session.create_session()
-    department = db_sess.query(Department).get(1)
-    users = list(map(lambda x: int(x), department.members.split(', ')))
-    users.append(department.chief)
-    res = {}
-    for user in users:
-        u = db_sess.query(User).get(user)
-        u = f'{u.surname} {u.name}'
-        res[u] = [0, user]
-    jobs = db_sess.query(Jobs).all()
-    for j in jobs:
-        if j.is_finished:
-            for u in res.keys():
-                if str(res[u][-1]) in j.collaborators or res[u][-1] == j.team_leader:
-                    res[u][0] += int(j.work_size)
-    for u in res.keys():
-        if res[u][0] > 25:
-            print(u)
 
 
 @app.errorhandler(404)

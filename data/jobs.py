@@ -20,3 +20,6 @@ class Jobs(SqlAlchemyBase, SerializerMixin):
     end_date = sqlalchemy.Column(sqlalchemy.DateTime)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean)
     user = orm.relationship('User')
+    categories = orm.relationship("Category",
+                                  secondary="jobs_to_category",
+                                  backref="jobs")

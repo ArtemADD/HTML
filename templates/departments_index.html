@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="static/css/style.css" />
+{% if current_user.is_authenticated %}
+    <div class="tb">
+        <h1>Works log</h1>
+        <p>
+            <a href="/" class="btn btn-secondary">Back to Jobs</a>
+        </p>
+        <p>
+            <a href="/new_department" class="btn btn-secondary">Add department</a>
+        </p>
+        {% for item in departments%}
+        <div>
+            <div>
+                <table>
+                    <caption>Department # {{loop.index}}</caption>
+                    <tr><th>Title of department</th><th>Chief</th><th>Members</th><th>Department email</th></tr>
+                    <tr><td class="td-def">{{item.title}}</td>
+                        <td class="td-def">{{tm[item.chief]}}</td>
+                        <td class="td-def">{{item.members}}</td>
+                        <td class="td-def">{{item.email}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <a href="/department/{{ item.id }}" class="btn btn-warning">
+                    Edit Department
+                </a>
+                <a href="/department_delete/{{ item.id }}" class="btn btn-danger">
+                    Delete Department
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

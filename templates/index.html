@@ -3,8 +3,11 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="static/css/style.css" />
 {% if current_user.is_authenticated %}
-    <div id="tb">
+    <div class="tb">
         <h1>Works log</h1>
+        <p>
+            <a href="/departments" class="btn btn-secondary">Departments</a>
+        </p>
         <p>
             <a href="/jobs" class="btn btn-secondary">Add job</a>
         </p>
@@ -13,11 +16,12 @@
             <div>
                 <table>
                     <caption>Action # {{loop.index}}</caption>
-                    <tr><th>Title of activity</th><th>Team Leader</th><th>Duration</th><th>List of collaborators</th><th>Is finished</th></tr>
+                    <tr><th>Title of activity</th><th>Team Leader</th><th>Duration</th><th>List of collaborators</th><th>Hazard category</th><th>Is finished</th></tr>
                     <tr><td class="td-def">{{item.job}}</td>
                         <td class="td-def">{{tm[item.team_leader]}}</td>
                         <td class="td-def">{{item.work_size}} hours</td>
                         <td class="td-def">{{item.collaborators}}</td>
+                        <td class="td-def">{{item.categories[0].name}}</td>
                         {% if item.is_finished %}
                             <td class="table-success">Is finished</td>
                         {% else %}
