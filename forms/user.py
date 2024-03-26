@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, TextAreaField, SubmitField, EmailField, BooleanField
+from wtforms import PasswordField, StringField, SubmitField, EmailField, BooleanField, IntegerField
 from wtforms.validators import DataRequired
 
 
@@ -21,3 +21,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
     submit = SubmitField('Submit')
+
+
+class Zxc(FlaskForm):
+    id_astro = IntegerField('Id астронавта')
+    pass_astro = StringField('Пароль астронавта')
+    id_cap = IntegerField('Id астронавта')
+    pass_cap = StringField('Пароль капитана')
+    submit = SubmitField('Доступ')

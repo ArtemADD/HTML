@@ -4,7 +4,7 @@ from data.users import User
 from data.jobs import Jobs
 from data.departments import Department
 from data.category import Category
-from forms.user import RegisterForm, LoginForm
+from forms.user import RegisterForm, LoginForm, Zxc
 from forms.jobs import JobsForm
 from forms.departments import DepartmentsForm
 from data import db_session, jobs_api, users_api
@@ -24,6 +24,12 @@ login_manager.init_app(app)
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+@app.route('/distribution')
+def distribution():
+    zxc = ['zxc', 'asdsd', 'dgfgj', 'vvbnv', 'rytryr', 'qeweq']
+    return render_template('2.html', data=zxc)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -57,17 +63,10 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = Zxc()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        return render_template('login.html',
-                               message="Incorrect username or password",
-                               form=form)
-    return render_template('login.html', title='Authorization', form=form)
+        return redirect("/")
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout')

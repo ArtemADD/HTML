@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="static/css/style.css" />
-    </head>
-    <body>
-        <h1 style="text-align: center">Загрузим файл</h1>
-        <form method="post" enctype="multipart/form-data" class="form">
-           <div class="form-group">
-                <label for="photo">Выберите файл</label>
-                <input type="file" class="form-control-file" id="photo" name="file">
-            </div>
-            <img src="static/img/img.png">
-            <button type="submit" class="btn btn-primary">Отправить</button>
-        </form>
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+    {% for item in data %}
+        {% if loop.first %}
+            <h2>{{ item }} - Каюта № {{ loop.index }} - Капитан</h2>
+        {% else %}
+            <h2>{{ item }} - Каюта № {{ loop.index }}</h2>
+        {% endif%}
+    {% endfor %}
+{% endblock %}
