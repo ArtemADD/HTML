@@ -58,3 +58,23 @@
     color: black;
     font-weight: bold;
 }
+.rectangle-f-f {
+    width:600px;
+    height:600px;
+    background: #FF4500;
+}
+.rectangle-f-a {
+    width:600px;
+    height:600px;
+    background: #FFA07A;
+}
+.rectangle-m-f {
+    width:600px;
+    height:600px;
+    background: #007FF0;
+}
+.rectangle-m-a {
+    width:600px;
+    height:600px;
+    background: #B0C4DE;
+}

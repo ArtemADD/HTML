@@ -32,6 +32,11 @@ def distribution():
     return render_template('2.html', data=zxc)
 
 
+@app.route('/table/<string:sex>/<int:age>')
+def table(sex, age):
+    return render_template('table.html', sex=sex, age=age)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
