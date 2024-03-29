@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_restful import Resource, abort, reqparse
+from flask_restful import Resource, abort
 from api.parser import Parser
 from data import db_session
 from data.jobs import Jobs

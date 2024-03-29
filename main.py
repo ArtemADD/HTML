@@ -8,7 +8,7 @@ from forms.user import RegisterForm, LoginForm
 from forms.jobs import JobsForm
 from forms.departments import DepartmentsForm
 from data import db_session, jobs_api, users_api
-from api import jobs_resources
+from api import jobs_resource, users_resource
 import os
 from requests import get
 from flask_restful import abort, Api
@@ -18,11 +18,10 @@ api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-# для списка объектов
-api.add_resource(jobs_resources.JobsListResource, '/api/v2/jobs')
-
-# для одного объекта
-api.add_resource(jobs_resources.JobsResources, '/api/v2/jobs/<int:jobs_id>')
+api.add_resource(jobs_resource.JobsListResource, '/api/v2/jobs')
+api.add_resource(jobs_resource.JobsResources, '/api/v2/jobs/<int:jobs_id>')
+api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+api.add_resource(users_resource.UsersResources, '/api/v2/users/<int:user_id>')
 
 
 @login_manager.user_loader
